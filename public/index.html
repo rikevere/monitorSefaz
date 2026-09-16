@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monitor SEFAZ · Disponibilidade NF-e / NFC-e</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=ciss-20260916">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-brand">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <div class="brand-text">
+      <h1>Monitor SEFAZ</h1>
+      <p>Disponibilidade dos autorizadores de NF-e / NFC-e</p>
+    </div>
+  </div>
+
+  <nav class="doc-switch" role="tablist" aria-label="Tipo de documento fiscal">
+    <button class="doc-tab is-active" data-doc="nfe" role="tab" aria-selected="true">NF-e</button>
+    <button class="doc-tab" data-doc="nfce" role="tab" aria-selected="false">NFC-e</button>
+  </nav>
+
+  <div class="topbar-meta">
+    <span class="env-pill" id="env-pill">ambiente · —</span>
+    <button class="refresh-btn" id="refresh-btn" title="Forçar nova verificação">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>
+      atualizar
+    </button>
+  </div>
+</header>
+
+<main class="page">
+
+  <section class="summary-line" id="summary-line" aria-live="polite">
+    Carregando status dos autorizadores…
+  </section>
+
+  <section class="map-panel" aria-labelledby="map-title">
+    <div class="map-header">
+      <div>
+        <p class="section-kicker">Mapa de disponibilidade</p>
+        <h2 id="map-title">Autorizadores por UF</h2>
+      </div>
+      <p class="map-selection" id="map-selection">Clique em um estado para ver os detalhes.</p>
+    </div>
+    <div class="map-wrap" id="brazil-map-wrap" aria-live="polite">
+      <p class="map-loading">Carregando mapa do Brasil…</p>
+    </div>
+  </section>
+
+  <section class="history-panel" aria-labelledby="history-title">
+    <div class="history-header">
+      <div>
+        <p class="section-kicker">Histórico mensal · registros diários</p>
+        <h2 id="history-title">Tempos de resposta</h2>
+      </div>
+      <label class="history-select-label" for="history-uf">UF
+        <select id="history-uf" aria-label="UF do gráfico"></select>
+      </label>
+    </div>
+    <div class="history-legend" aria-label="Classificação do tempo de resposta">
+      <span class="legend-normal">Normal</span><span class="legend-slow">Lento</span><span class="legend-very-slow">Muito Lento</span><span class="legend-error">Erro</span><span class="legend-timeout">Timeout</span>
+    </div>
+    <div class="history-charts">
+      <div class="history-chart-block"><h3>A cada consulta</h3><p class="history-summary" id="history-summary-sample">Aguardando a primeira coleta.</p><div class="chart-wrap"><canvas id="history-chart-sample" aria-label="Tempo de resposta a cada consulta"></canvas></div></div>
+      <div class="history-chart-block"><h3>Tempo médio por hora</h3><p class="history-summary" id="history-summary-hour">Aguardando a primeira coleta.</p><div class="chart-wrap"><canvas id="history-chart-hour" aria-label="Tempo médio de resposta por hora"></canvas></div></div>
+      <div class="history-chart-block"><h3>Tempo médio por dia</h3><p class="history-summary" id="history-summary-day">Aguardando a primeira coleta.</p><div class="chart-wrap"><canvas id="history-chart-day" aria-label="Tempo médio de resposta por dia"></canvas></div></div>
+    </div>
+  </section>
+
+  <aside class="detail-panel" id="detail-panel" aria-hidden="true">
+    <button class="detail-close" id="detail-close" aria-label="Fechar detalhes">&times;</button>
+    <div id="detail-content"></div>
+  </aside>
+
+  <section class="legend" aria-label="Legenda de estados">
+    <p class="legend-title">Como os estados são calculados</p>
+    <div class="legend-items">
+      <div class="legend-item"><span class="dot dot-verde"></span><div><strong>Operando</strong><span>A última consulta retornou resposta positiva (cStat 107).</span></div></div>
+      <div class="legend-item"><span class="dot dot-amarelo"></span><div><strong>Instável</strong><span>Primeira resposta negativa. Uma resposta positiva a qualquer momento volta para operando.</span></div></div>
+      <div class="legend-item"><span class="dot dot-vermelho"></span><div><strong>Fora do ar</strong><span>Respostas negativas persistentes por mais de 10 minutos.</span></div></div>
+      <div class="legend-item"><span class="dot dot-cinza"></span><div><strong>Sem dados</strong><span>Ainda não houve verificação para este autorizador.</span></div></div>
+    </div>
+    <p class="legend-note">Mesma lógica de estados usada pelo Portal Nacional da NF-e em <a href="https://www.nfe.fazenda.gov.br/portal/disponibilidade.aspx" target="_blank" rel="noopener">Consultar Disponibilidade</a>, aplicada aqui sobre chamadas diretas ao webservice <code>NFeStatusServico4</code> de cada SEFAZ.</p>
+  </section>
+
+  <footer class="page-footer">
+    <span id="updated-at">—</span>
+    <span class="sep">·</span>
+    <span>Atualização automática a cada <span id="interval-label">3 min</span></span>
+  </footer>
+
+</main>
+
+<script src="js/app.js?v=ciss-20260916"></script>
+</body>
+</html>

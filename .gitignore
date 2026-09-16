@@ -1,0 +1,5 @@
+node_modules/
+.env
+*.log
+data/status-history-*.json
+data/status-history-*.json.tmp

@@ -1,0 +1,19 @@
+{
+  "name": "sefaz-monitor",
+  "version": "1.0.0",
+  "description": "Dashboard de disponibilidade dos webservices da SEFAZ/NF-e (NFeStatusServico4), com backend Node.js e frontend estático.",
+  "main": "server/index.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "@svg-maps/brazil": "^2.0.0",
+    "express": "^4.19.2"
+  },
+  "license": "MIT"
+}

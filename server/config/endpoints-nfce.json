@@ -1,0 +1,191 @@
+{
+  "AC": {
+    "autorizador": "SVRS",
+    "statusServico": {
+      "producao": "https://nfce.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx",
+      "homologacao": "https://nfce-homologacao.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx"
+    }
+  },
+  "AL": {
+    "autorizador": "SVRS",
+    "statusServico": {
+      "producao": "https://nfce.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx",
+      "homologacao": "https://nfce-homologacao.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx"
+    }
+  },
+  "AM": {
+    "autorizador": "AM",
+    "statusServico": {
+      "producao": "https://nfce.sefaz.am.gov.br/nfce-services/services/NfeStatusServico4",
+      "homologacao": "https://homnfce.sefaz.am.gov.br/nfce-services/services/NfeStatusServico4"
+    }
+  },
+  "AP": {
+    "autorizador": "SVRS",
+    "statusServico": {
+      "producao": "https://nfce.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx",
+      "homologacao": "https://nfce-homologacao.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx"
+    }
+  },
+  "BA": {
+    "autorizador": "SVRS",
+    "statusServico": {
+      "producao": "https://nfce.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx",
+      "homologacao": "https://nfce-homologacao.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx"
+    }
+  },
+  "CE": {
+    "autorizador": "SVRS",
+    "statusServico": {
+      "producao": "https://nfce.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx",
+      "homologacao": "https://nfce-homologacao.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx"
+    }
+  },
+  "DF": {
+    "autorizador": "SVRS",
+    "statusServico": {
+      "producao": "https://nfce.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx",
+      "homologacao": "https://nfce-homologacao.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx"
+    }
+  },
+  "ES": {
+    "autorizador": "SVRS",
+    "statusServico": {
+      "producao": "https://nfce.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx",
+      "homologacao": "https://nfce-homologacao.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx"
+    }
+  },
+  "GO": {
+    "autorizador": "GO",
+    "statusServico": {
+      "producao": "https://nfe.sefaz.go.gov.br/nfe/services/NFeStatusServico4",
+      "homologacao": "https://homolog.sefaz.go.gov.br/nfe/services/NFeStatusServico4"
+    }
+  },
+  "MA": {
+    "autorizador": "SVRS",
+    "statusServico": {
+      "producao": "https://nfce.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx",
+      "homologacao": "https://nfce-homologacao.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx"
+    }
+  },
+  "MG": {
+    "autorizador": "MG",
+    "statusServico": {
+      "producao": "https://nfce.fazenda.mg.gov.br/nfce/services/NFeStatusServico4",
+      "homologacao": "https://hnfce.fazenda.mg.gov.br/nfce/services/NFeStatusServico4"
+    }
+  },
+  "MS": {
+    "autorizador": "MS",
+    "statusServico": {
+      "producao": "https://nfce.sefaz.ms.gov.br/ws/NFeStatusServico4",
+      "homologacao": "https://hom.nfce.sefaz.ms.gov.br/ws/NFeStatusServico4"
+    }
+  },
+  "MT": {
+    "autorizador": "MT",
+    "statusServico": {
+      "producao": "https://nfce.sefaz.mt.gov.br/nfcews/services/NfeStatusServico4",
+      "homologacao": "https://homologacao.sefaz.mt.gov.br/nfcews/services/NfeStatusServico4"
+    }
+  },
+  "PA": {
+    "autorizador": "SVRS",
+    "statusServico": {
+      "producao": "https://nfce.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx",
+      "homologacao": "https://nfce-homologacao.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx"
+    }
+  },
+  "PB": {
+    "autorizador": "SVRS",
+    "statusServico": {
+      "producao": "https://nfce.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx",
+      "homologacao": "https://nfce-homologacao.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx"
+    }
+  },
+  "PE": {
+    "autorizador": "SVRS",
+    "statusServico": {
+      "producao": "https://nfce.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx",
+      "homologacao": "https://nfce-homologacao.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx"
+    }
+  },
+  "PI": {
+    "autorizador": "SVRS",
+    "statusServico": {
+      "producao": "https://nfce.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx",
+      "homologacao": "https://nfce-homologacao.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx"
+    }
+  },
+  "PR": {
+    "autorizador": "PR",
+    "statusServico": {
+      "producao": "https://nfce.sefa.pr.gov.br/nfce/NFeStatusServico4",
+      "homologacao": "https://homologacao.nfce.sefa.pr.gov.br/nfce/NFeStatusServico4"
+    }
+  },
+  "RJ": {
+    "autorizador": "SVRS",
+    "statusServico": {
+      "producao": "https://nfce.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx",
+      "homologacao": "https://nfce-homologacao.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx"
+    }
+  },
+  "RN": {
+    "autorizador": "SVRS",
+    "statusServico": {
+      "producao": "https://nfce.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx",
+      "homologacao": "https://nfce-homologacao.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx"
+    }
+  },
+  "RO": {
+    "autorizador": "SVRS",
+    "statusServico": {
+      "producao": "https://nfce.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx",
+      "homologacao": "https://nfce-homologacao.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx"
+    }
+  },
+  "RR": {
+    "autorizador": "SVRS",
+    "statusServico": {
+      "producao": "https://nfce.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx",
+      "homologacao": "https://nfce-homologacao.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx"
+    }
+  },
+  "RS": {
+    "autorizador": "RS",
+    "statusServico": {
+      "producao": "https://nfce.sefazrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx",
+      "homologacao": "https://nfce-homologacao.sefazrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx"
+    }
+  },
+  "SC": {
+    "autorizador": "SVRS",
+    "statusServico": {
+      "producao": "https://nfce.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx",
+      "homologacao": "https://nfce-homologacao.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx"
+    }
+  },
+  "SE": {
+    "autorizador": "SVRS",
+    "statusServico": {
+      "producao": "https://nfce.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx",
+      "homologacao": "https://nfce-homologacao.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx"
+    }
+  },
+  "SP": {
+    "autorizador": "SP",
+    "statusServico": {
+      "producao": "https://nfce.fazenda.sp.gov.br/ws/NFeStatusServico4.asmx",
+      "homologacao": "https://homologacao.nfce.fazenda.sp.gov.br/ws/NFeStatusServico4.asmx"
+    }
+  },
+  "TO": {
+    "autorizador": "SVRS",
+    "statusServico": {
+      "producao": "https://nfce.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx",
+      "homologacao": "https://nfce-homologacao.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx"
+    }
+  }
+}
