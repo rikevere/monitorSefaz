@@ -258,9 +258,35 @@ retorno.
 - alguns estados usam namespaces SOAP ligeiramente diferentes, e o cliente
   já tenta variantes comuns;
 - o snapshot corrente fica em memória, mas o histórico mensal agrupado por dia
-  é persistido em `data/status-history-YYYY-MM.json`;
+  é persistido em `data/monitor-sefaz.sqlite`;
 - o comportamento real depende fortemente da cadeia raiz e da qualidade da
   conexão com a internet do servidor.
+
+## Iniciar automaticamente no boot do Windows (sem login)
+
+Para o monitor sobreviver a reinícios do Windows mesmo sem nenhum usuário
+fazer login, use os scripts em `scripts/`, que registram uma Tarefa Agendada
+disparada em "At startup" (não "at logon"):
+
+- `scripts/start-monitor-service.cmd` — inicia o Node do projeto e grava log
+  em `logs/monitor-sefaz.log`;
+- `scripts/install-scheduled-task.ps1` — registra a tarefa `MonitorSefaz`
+  rodando sob a conta `SYSTEM`;
+- `scripts/install-scheduled-task-user.ps1` — alternativa que registra a
+  mesma tarefa sob a sua própria conta de usuário (via `Get-Credential`),
+  útil quando um antivírus/EDR bloqueia processos disparados pela conta
+  `SYSTEM` a partir de uma pasta fora de `Program Files`.
+
+Execute UMA VEZ, em um PowerShell aberto como Administrador:
+
+```powershell
+cd C:\MonitorSefaz\monitorSefaz
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts\install-scheduled-task.ps1
+```
+
+Confirme com `Get-ScheduledTaskInfo -TaskName MonitorSefaz` que
+`LastTaskResult` é `0` (concluído) ou `267009`/`0x00041301` (tarefa em
+execução contínua, esperado para um serviço que nunca termina sozinho).
 
 ## Diagnóstico rápido se nada aparecer
 

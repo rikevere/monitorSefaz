@@ -1,5 +1,8 @@
 node_modules/
 .env
 *.log
+logs/
 data/status-history-*.json
 data/status-history-*.json.tmp
+data/*.sqlite
+data/*.sqlite-journal
