@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const initSqlJs = require('sql.js');
 
 function dateInTimeZone(date, timeZone) {
   const parts = new Intl.DateTimeFormat('en', {
@@ -24,63 +25,178 @@ function emptyHistory(month, intervalMs) {
   return { month, updatedAt: null, intervalMs, days: {} };
 }
 
+function jsonValue(value) {
+  return value === null || value === undefined ? null : value;
+}
+
 class HistoryStore {
   constructor({ dataDir = path.join(__dirname, '..', 'data'), timeZone = 'America/Sao_Paulo' } = {}) {
     this.dataDir = dataDir;
     this.timeZone = timeZone;
-    this.data = null;
+    this.dbPath = path.join(dataDir, 'monitor-sefaz.sqlite');
+    this.db = null;
+    this.initPromise = this._initialize();
   }
 
-  async _load(month, intervalMs) {
-    if (this.data && this.data.month === month) return;
-    const filePath = path.join(this.dataDir, `status-history-${month}.json`);
+  async _initialize() {
+    await fs.promises.mkdir(path.dirname(this.dbPath), { recursive: true });
+    const SQL = await initSqlJs({
+      locateFile: (file) => path.join(path.dirname(require.resolve('sql.js')), file),
+    });
+    const existing = await fs.promises.readFile(this.dbPath).catch((error) => {
+      if (error.code !== 'ENOENT') throw error;
+      return null;
+    });
+    this.db = existing ? new SQL.Database(existing) : new SQL.Database();
+    this.db.run(`
+      CREATE TABLE IF NOT EXISTS readings (
+        collected_at TEXT NOT NULL,
+        month TEXT NOT NULL,
+        day TEXT NOT NULL,
+        document TEXT NOT NULL,
+        uf TEXT NOT NULL,
+        ok INTEGER NOT NULL,
+        color TEXT NOT NULL,
+        c_stat TEXT,
+        latency_ms INTEGER,
+        classification TEXT NOT NULL,
+        source TEXT NOT NULL,
+        PRIMARY KEY (collected_at, document, uf)
+      );
+      CREATE TABLE IF NOT EXISTS metadata (
+        month TEXT PRIMARY KEY,
+        updated_at TEXT,
+        interval_ms INTEGER NOT NULL
+      );
+    `);
+    await this._importLegacyJson();
+    await this._save();
+  }
+
+  async _importLegacyJson() {
+    const files = await fs.promises.readdir(this.dataDir);
+    const jsonFiles = files.filter((file) => /^status-history-\d{4}-\d{2}\.json$/.test(file));
+    const insert = this.db.prepare(`
+      INSERT OR IGNORE INTO readings
+        (collected_at, month, day, document, uf, ok, color, c_stat, latency_ms, classification, source)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `);
+    const metadata = this.db.prepare('INSERT OR IGNORE INTO metadata (month, updated_at, interval_ms) VALUES (?, ?, ?)');
+
     try {
-      const parsed = JSON.parse(await fs.promises.readFile(filePath, 'utf8'));
-      this.data = parsed.month === month ? { ...emptyHistory(month, intervalMs), ...parsed, intervalMs } : emptyHistory(month, intervalMs);
-    } catch (error) {
-      if (error.code !== 'ENOENT' && !(error instanceof SyntaxError)) throw error;
-      this.data = emptyHistory(month, intervalMs);
+      for (const file of jsonFiles) {
+        const parsed = JSON.parse(await fs.promises.readFile(path.join(this.dataDir, file), 'utf8'));
+        if (!parsed.month || !parsed.days) continue;
+        metadata.run([parsed.month, parsed.updatedAt || null, Number(parsed.intervalMs) || 0]);
+        for (const [day, dayData] of Object.entries(parsed.days)) {
+          for (const sample of dayData.samples || []) {
+            for (const [document, ufs] of Object.entries(sample.documents || {})) {
+              for (const [uf, item] of Object.entries(ufs || {})) {
+                insert.run([
+                  sample.timestamp,
+                  parsed.month,
+                  day,
+                  document,
+                  uf,
+                  item.ok === true ? 1 : 0,
+                  item.color || 'cinza',
+                  jsonValue(item.cStat),
+                  Number.isFinite(item.latencyMs) ? item.latencyMs : null,
+                  item.classification || 'Erro',
+                  item.source || 'SOAP',
+                ]);
+              }
+            }
+          }
+        }
+      }
+    } finally {
+      insert.free();
+      metadata.free();
     }
   }
 
   async _save() {
-    const filePath = path.join(this.dataDir, `status-history-${this.data.month}.json`);
-    await fs.promises.mkdir(this.dataDir, { recursive: true });
-    const temporaryPath = `${filePath}.tmp`;
-    await fs.promises.writeFile(temporaryPath, `${JSON.stringify(this.data, null, 2)}\n`, 'utf8');
-    await fs.promises.rename(temporaryPath, filePath);
+    const bytes = this.db.export();
+    await fs.promises.writeFile(this.dbPath, Buffer.from(bytes));
   }
 
   async append(documents, intervalMs, collectedAt = new Date()) {
+    await this.initPromise;
+    const timestamp = collectedAt.toISOString();
     const date = dateInTimeZone(collectedAt, this.timeZone);
     const month = monthInTimeZone(collectedAt, this.timeZone);
-    await this._load(month, intervalMs);
-    if (!this.data.days[date]) this.data.days[date] = { samples: [] };
-    const sample = { timestamp: collectedAt.toISOString(), documents: {} };
+    const insert = this.db.prepare(`
+      INSERT OR REPLACE INTO readings
+        (collected_at, month, day, document, uf, ok, color, c_stat, latency_ms, classification, source)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `);
 
-    for (const [docKey, document] of Object.entries(documents || {})) {
-      sample.documents[docKey] = {};
-      for (const item of document.ufs || []) {
-        sample.documents[docKey][item.uf] = {
-          ok: item.ok === true,
-          color: item.estado ? item.estado.color : 'cinza',
-          cStat: item.cStat || null,
-          latencyMs: Number.isFinite(item.latenciaMs) ? item.latenciaMs : null,
-          classification: classifyLatency(item.latenciaMs, item.erro, item.transportClass),
-          source: item.source || 'SOAP',
-        };
+    try {
+      for (const [docKey, document] of Object.entries(documents || {})) {
+        for (const item of document.ufs || []) {
+          insert.run([
+            timestamp,
+            month,
+            date,
+            docKey,
+            item.uf,
+            item.ok === true ? 1 : 0,
+            item.estado ? item.estado.color : 'cinza',
+            jsonValue(item.cStat),
+            Number.isFinite(item.latenciaMs) ? item.latenciaMs : null,
+            classifyLatency(item.latenciaMs, item.erro, item.transportClass),
+            item.source || 'SOAP',
+          ]);
+        }
       }
+      this.db.run(
+        'INSERT OR REPLACE INTO metadata (month, updated_at, interval_ms) VALUES (?, ?, ?)',
+        [month, timestamp, intervalMs],
+      );
+    } finally {
+      insert.free();
     }
 
-    this.data.days[date].samples.push(sample);
-    this.data.updatedAt = collectedAt.toISOString();
     await this._save();
-    return this.data;
+    return this._readMonth(month, intervalMs);
+  }
+
+  _readMonth(month, intervalMs) {
+    const result = this.db.exec(`
+      SELECT collected_at, day, document, uf, ok, color, c_stat, latency_ms, classification, source
+      FROM readings
+      WHERE month = ?
+      ORDER BY collected_at, document, uf
+    `, [month]);
+    const metadata = this.db.exec('SELECT updated_at, interval_ms FROM metadata WHERE month = ?', [month]);
+    const history = emptyHistory(month, metadata.length ? metadata[0].values[0][1] : intervalMs);
+    history.updatedAt = metadata.length ? metadata[0].values[0][0] : null;
+    const rows = result.length ? result[0].values : [];
+
+    for (const [timestamp, day, document, uf, ok, color, cStat, latencyMs, classification, source] of rows) {
+      if (!history.days[day]) history.days[day] = { samples: [] };
+      let sample = history.days[day].samples.find((entry) => entry.timestamp === timestamp);
+      if (!sample) {
+        sample = { timestamp, documents: {} };
+        history.days[day].samples.push(sample);
+      }
+      if (!sample.documents[document]) sample.documents[document] = {};
+      sample.documents[document][uf] = {
+        ok: ok === 1,
+        color,
+        cStat,
+        latencyMs,
+        classification,
+        source,
+      };
+    }
+    return history;
   }
 
   async read(intervalMs) {
-    await this._load(monthInTimeZone(new Date(), this.timeZone), intervalMs);
-    return this.data;
+    await this.initPromise;
+    return this._readMonth(monthInTimeZone(new Date(), this.timeZone), intervalMs);
   }
 }
 

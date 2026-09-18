@@ -203,7 +203,7 @@ sefaz-monitor/
 ├── node_modules/@svg-maps/brazil/
 │   └── brazil.svg  (mapa interativo dos 27 estados, instalado via npm)
 ├── data/
-│   └── status-history-YYYY-MM.json  (gerado em runtime, um arquivo por mês)
+│   └── monitor-sefaz.sqlite  (banco SQLite gerado em runtime)
 └── test/
   ├── historyStore.test.js
   ├── snapshotStatus.test.js
@@ -223,9 +223,14 @@ uso pelo frontend.
 ## Histórico mensal e gráficos
 
 Cada ciclo concluído grava uma amostra por documento e UF em
-`data/status-history-YYYY-MM.json`. O arquivo mensal possui registros agrupados
-por dia, incluindo `latencyMs`, classificação, `cStat`, estado e fonte. Ao
-virar o mês, um novo arquivo é usado automaticamente.
+`data/monitor-sefaz.sqlite`. O banco possui uma linha por coleta, documento e
+UF, incluindo `latencyMs`, classificação, `cStat`, estado e fonte. O endpoint
+`GET /api/history` mantém o formato mensal agrupado por dia esperado pelo
+frontend.
+
+Na primeira inicialização, arquivos legados `data/status-history-YYYY-MM.json`
+são importados automaticamente para o SQLite. Depois da validação da migração,
+esses arquivos podem ser removidos; novas coletas não recriam JSON.
 
 As classificações de tempo são: `Normal` (até 2 s), `Lento` (até 5 s), `Muito
 Lento` (abaixo de 30 s), `Timeout` (30 s ou mais) e `Erro` (sem retorno).
